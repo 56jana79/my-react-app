@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Data } from '../Ulist/Data';
 import './Test.css';
 
-const Test = () => {
+const Test = ({ isSidebarOpen }) => {
   const [viewstate, setviewstate] = useState(false);
   const [isqchecked, setqstate] = useState(false);
   const [isownerchecked, setownerchecked] = useState(false);
@@ -13,8 +13,8 @@ const Test = () => {
   const [selectall, setselectall] = useState(false);
   const [expandedId, setExpandedId] = useState(null);
   const [checkedItems, setCheckedItems] = useState({});
-  const [searchQuery, setSearchQuery] = useState(""); // Search input state
-  const [showAll, setShowAll] = useState(false); // Load more/less toggle
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
 
   const handleToggle = (id) => {
     setExpandedId(expandedId === id ? null : id);
@@ -27,7 +27,6 @@ const Test = () => {
   const selectallhandle = () => {
     const newSelectAll = !selectall;
     setselectall(newSelectAll);
-
     const updatedItems = {};
     Data.forEach((item, index) => {
       updatedItems[index] = newSelectAll;
@@ -55,65 +54,65 @@ const Test = () => {
     item.subquestion.toLowerCase().includes(searchQuery)
   );
 
-  // Determine data to display based on showAll toggle
   const dataToDisplay = showAll ? filteredData : filteredData.slice(0, 10);
 
   return (
-    <div>
-      <div className='side-part'>
-        <div className='add-q-button'>
-          <button>
-            <h4>Add Question</h4>
-          </button>
-        </div>
-
-        <div>
-          <p className='snap-text'>SNAP SHOT</p>
-          <p className='snap-text'>SECTION</p>
-          <br />
-
-          <div className='sections'>
-            <span>
-              <i className="bi bi-plus"></i>
-              <p>New Section</p>
-            </span>
-            <span>
-              <i className="bi bi-circle-fill" style={{ color: 'red' }}></i>
-              <Link to='/section1'>
-                <p>Section1</p>
-              </Link>
-            </span>
-            <span>
-              <i className="bi bi-circle-fill" style={{ color: 'blue' }}></i>
-              <Link to="/section2">
-                <p>Section2</p>
-              </Link>
-            </span>
-            <span>
-              <Link to='/un'>
-                <p>Uncategorized (5)</p>
-              </Link>
-            </span>
+    <div className="test-container" style={{ display: 'flex', width: '100%' }}>
+      {isSidebarOpen && (
+        <div className='side-part'>
+          <div className='add-q-button'>
+            <button>
+              <h4>Add Question</h4>
+            </button>
           </div>
 
-          <div className='test-information'>
-            <span className='test-inform'>
-              <p>TEST INFORMATION</p>
-            </span>
-            <div className='inner-test'>
-              <p><i className="bi bi-circle"></i>Mark : (10)</p>
-              <p><i className="bi bi-circle"></i>No.of Q : (10)</p>
-              <p><i className="bi bi-circle"></i>Neg : (10)</p>
-              <p><i className="bi bi-circle"></i>Duration : (10)</p>
+          <div>
+            <p className='snap-text'>SNAP SHOT</p>
+            <p className='snap-text'>SECTION</p>
+            <br />
+
+            <div className='sections'>
+              <span>
+                <i className="bi bi-plus"></i>
+                <p>New Section</p>
+              </span>
+              <span>
+                <i className="bi bi-circle-fill" style={{ color: 'red' }}></i>
+                <Link to='/section1'>
+                  <p>Section1</p>
+                </Link>
+              </span>
+              <span>
+                <i className="bi bi-circle-fill" style={{ color: 'blue' }}></i>
+                <Link to="/section2">
+                  <p>Section2</p>
+                </Link>
+              </span>
+              <span>
+                <Link to='/un'>
+                  <p>Uncategorized (5)</p>
+                </Link>
+              </span>
+            </div>
+
+            <div className='test-information'>
+              <span className='test-inform'>
+                <p>TEST INFORMATION</p>
+              </span>
+              <div className='inner-test'>
+                <p><i className="bi bi-circle"></i>Mark : (10)</p>
+                <p><i className="bi bi-circle"></i>No.of Q : (10)</p>
+                <p><i className="bi bi-circle"></i>Neg : (10)</p>
+                <p><i className="bi bi-circle"></i>Duration : (10)</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className='center-part'>
         <div className='test-upper'>
           <h4>Test 1 Questions</h4>
-
           <div className='view-buttons'>
             <button>Full View</button>
             <button onClick={viewbutton}>View</button>
@@ -122,31 +121,19 @@ const Test = () => {
 
         {viewstate && (
           <div className='e1'>
-            <div className='question-check'>
-              <label>
-                <input type='checkbox' checked={isqchecked} onChange={() => setqstate(!isqchecked)} /> Questions
-              </label>
-            </div>
-            <div className='question-check'>
-              <label>
-                <input type='checkbox' checked={isownerchecked} onChange={() => setownerchecked(!isownerchecked)} /> Owner
-              </label>
-            </div>
-            <div className='question-check'>
-              <label>
-                <input type='checkbox' checked={istypechecked} onChange={() => settypechecked(!istypechecked)} /> Type
-              </label>
-            </div>
-            <div className='question-check'>
-              <label>
-                <input type='checkbox' checked={ismarkchecked} onChange={() => setmarkchecked(!ismarkchecked)} /> Marks
-              </label>
-            </div>
-            <div className='question-check'>
-              <label>
-                <input type='checkbox' checked={isactionchecked} onChange={() => setactionchecked(!isactionchecked)} /> Actions
-              </label>
-            </div>
+            {[
+              ['Questions', isqchecked, setqstate],
+              ['Owner', isownerchecked, setownerchecked],
+              ['Type', istypechecked, settypechecked],
+              ['Marks', ismarkchecked, setmarkchecked],
+              ['Actions', isactionchecked, setactionchecked]
+            ].map(([label, state, setState], idx) => (
+              <div key={idx} className='question-check'>
+                <label>
+                  <input type='checkbox' checked={state} onChange={() => setState(!state)} /> {label}
+                </label>
+              </div>
+            ))}
             <button className='applay-button' onClick={applayfn}>Apply</button>
           </div>
         )}

@@ -17,6 +17,8 @@
 .arrow-container {
   font-size: 24px;
   color: #09b0de;
+  display: flex;
+  margin-left: 100px;
 }
 
 .image-nav {
